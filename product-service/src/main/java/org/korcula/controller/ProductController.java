@@ -21,7 +21,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ProductController {
 
-	private ProductService productService;
+	private final ProductService productService;
 	
 	@PostMapping
 	public ResponseEntity<?> addnewProduct(@RequestBody RequestProduct request){

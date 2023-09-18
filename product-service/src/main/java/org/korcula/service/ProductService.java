@@ -21,10 +21,10 @@ public class ProductService {
 	public String newProduct(RequestProduct request) {
 		Product newProduct = new Product();
 		BeanUtils.copyProperties(request, newProduct);
-		
+		System.out.println("Before save: " + newProduct);
 		productRepository.save(newProduct);
 		String result = "Product successfully added!";
-		
+		System.out.println("After save: " + newProduct);
 		return result;
 	}
 	

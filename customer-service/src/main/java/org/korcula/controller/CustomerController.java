@@ -23,10 +23,8 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/market")
+@RequestMapping("/api/custtomer")
 public class CustomerController {
-
-
 
 	private final CustomerService customerService;
 	
