@@ -9,9 +9,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ResponseProduct {
+public class ProductResponse {
 	private String productName;
 	private int quantity;
 	private double price;
-	private Long customerId;
+//	private Long customerId;
 }

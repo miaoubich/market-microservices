@@ -3,8 +3,8 @@ package org.korcula.controller;
 import java.util.List;
 import java.util.Map;
 
-import org.korcula.dto.RequestCustomer;
-import org.korcula.dto.ResponseCustomer;
+import org.korcula.dto.CustomerRequest;
+import org.korcula.dto.CustomerResponse;
 import org.korcula.model.Customer;
 import org.korcula.service.CustomerService;
 import org.springframework.http.HttpStatus;
@@ -23,21 +23,21 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/custtomer")
+@RequestMapping("/customers")
 public class CustomerController {
 
 	private final CustomerService customerService;
 	
 	@PostMapping
-	public ResponseEntity<String> newCustomer(@RequestBody RequestCustomer customer){
+	public ResponseEntity<String> newCustomer(@RequestBody CustomerRequest customer){
 		String resultMessage = customerService.createNewCustomer(customer);
 		return new ResponseEntity<String>(resultMessage, HttpStatus.CREATED);
 	}
 	
 	@GetMapping("/{custId}")
-	public ResponseEntity<ResponseCustomer> getCustomer(@PathVariable Long custId){
-		ResponseCustomer customer = customerService.getOneCustomer(custId);
-		return new ResponseEntity<ResponseCustomer>(customer, HttpStatus.FOUND);
+	public ResponseEntity<CustomerResponse> getCustomer(@PathVariable Integer custId){
+		CustomerResponse customer = customerService.getOneCustomer(custId);
+		return new ResponseEntity<CustomerResponse>(customer, HttpStatus.FOUND);
 	}
 	
 	@GetMapping("/all")
@@ -47,21 +47,21 @@ public class CustomerController {
 	}
 	
 	@PutMapping
-	public ResponseEntity<ResponseCustomer> updateCustomer(@RequestBody Customer customer){
-		ResponseCustomer updatedCustomer = customerService.editCustomer(customer);
-		return new ResponseEntity<ResponseCustomer>(updatedCustomer, HttpStatus.OK);
+	public ResponseEntity<CustomerResponse> updateCustomer(@RequestBody Customer customer){
+		CustomerResponse updatedCustomer = customerService.editCustomer(customer);
+		return new ResponseEntity<CustomerResponse>(updatedCustomer, HttpStatus.OK);
 	}
 	
 	@DeleteMapping("/{custId}")
-	public ResponseEntity<String> deleteCustomer(@PathVariable Long custId) {
+	public ResponseEntity<String> deleteCustomer(@PathVariable Integer custId) {
 		String result = customerService.deleteCustomerById(custId);
 		return new ResponseEntity<String>(result, HttpStatus.OK);
 	}
 	
 	@PatchMapping("/{custId}")
-	public ResponseEntity<ResponseCustomer> updateCustomerByField(@PathVariable Long custId, @RequestBody Map<Object, Object> fields){
-		ResponseCustomer customCustomer = customerService.updateByField(custId, fields);
-		return new ResponseEntity<ResponseCustomer>(customCustomer, HttpStatus.OK);
+	public ResponseEntity<CustomerResponse> updateCustomerByField(@PathVariable Integer custId, @RequestBody Map<Object, Object> fields){
+		CustomerResponse customCustomer = customerService.updateByField(custId, fields);
+		return new ResponseEntity<CustomerResponse>(customCustomer, HttpStatus.OK);
 	} 
 	
 //	@GetMapping("/getcutprod")

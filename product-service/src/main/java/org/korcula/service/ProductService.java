@@ -4,9 +4,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.korcula.dto.RequestProduct;
-import org.korcula.dto.ResponseProduct;
+import org.korcula.dto.ProductResponse;
 import org.korcula.model.Product;
 import org.korcula.repository.ProductRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
@@ -17,20 +18,20 @@ import lombok.RequiredArgsConstructor;
 public class ProductService {
 
 	private final ProductRepository productRepository;
+	private final ModelMapper modelMapper;
 
 	public String newProduct(RequestProduct request) {
-		Product newProduct = new Product();
-		BeanUtils.copyProperties(request, newProduct);
-		System.out.println("Before save: " + newProduct);
+
+		Product newProduct = modelMapper.map(request, Product.class);
 		productRepository.save(newProduct);
+		
 		String result = "Product successfully added!";
-		System.out.println("After save: " + newProduct);
 		return result;
 	}
 	
-	public ResponseProduct getProductById(Long productId) {
+	public ProductResponse getProductById(Integer productId) {
 		Product product = productRepository.findById(productId).orElseGet(null);
-		ResponseProduct response = new ResponseProduct();
+		ProductResponse response = new ProductResponse();
 		
 		if(product != null) {
 			BeanUtils.copyProperties(product, response);
@@ -38,7 +39,14 @@ public class ProductService {
 		return response;
 	}
 	
-	public List<Long> getProducts(){
+	public ProductResponse getProductByCustomerId(Integer customerId) {
+		Product product = productRepository.findProductByCustomerId(customerId);
+		ProductResponse responseProduct = modelMapper.map(product, ProductResponse.class);
+	
+		return responseProduct;
+	}
+	
+	public List<Integer> getProducts(){
 		List<Product> products = productRepository.findAll();
 	
 		if(!products.isEmpty())

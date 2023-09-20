@@ -1,9 +1,6 @@
 package org.korcula.dto;
 
 import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,15 +12,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class RequestProduct {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+	private Integer id;
 	@Column(name = "product_name")
 	private String productName;
 	private int quantity;
 	private double price;
 	
 	//Reference to Customer entity using customer_id
-	@Column(name = "customer_id")
-	private Long customerId;
+//	@Column(name = "customer_id")
+//	private Long customerId;
 }

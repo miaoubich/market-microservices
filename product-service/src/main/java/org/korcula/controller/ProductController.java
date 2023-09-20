@@ -3,7 +3,8 @@ package org.korcula.controller;
 import java.util.List;
 
 import org.korcula.dto.RequestProduct;
-import org.korcula.dto.ResponseProduct;
+import org.korcula.dto.ProductResponse;
+import org.korcula.model.Product;
 import org.korcula.service.ProductService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/product")
+@RequestMapping("/products")
 @RequiredArgsConstructor
 public class ProductController {
 
@@ -31,16 +32,23 @@ public class ProductController {
 	}
 	
 	@GetMapping("/{productId}")
-	public ResponseEntity<?> getProductById(@PathVariable Long productId){
-		ResponseProduct product = productService.getProductById(productId);
+	public ResponseEntity<?> getProductById(@PathVariable Integer productId){
+		ProductResponse product = productService.getProductById(productId);
 		
 		return new ResponseEntity<>(product, HttpStatus.FOUND);
 	}
 	
 	@GetMapping
-	public List<Long> getAllProducts(){
-		List<Long> products = productService.getProducts();
+	public List<Integer> getAllProducts(){
+		List<Integer> products = productService.getProducts();
 		
 		return products;
+	}
+	
+	@GetMapping("/customerId")
+	public ResponseEntity<ProductResponse> getProductByCustomerId(@PathVariable Integer customerId){
+		ProductResponse product = productService.getProductByCustomerId(customerId);
+		
+		return ResponseEntity.status(HttpStatus.FOUND).body(product);
 	}
 }

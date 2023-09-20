@@ -1,7 +1,5 @@
 package org.korcula.dto;
 
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,10 +9,16 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ResponseCustomer {
+public class CustomerRequest {
 
+	private Integer id;
 	private String customerName;
 	private String email;
 	private String gender;
-	private List<Long> products;
+	
+//	@ElementCollection
+//	@CollectionTable(name = "customer_product_ids",
+//					 joinColumns = @JoinColumn(name = "customer_id"))
+//	@Column(name = "product_id")
+//	private List<Long> products;
 }
