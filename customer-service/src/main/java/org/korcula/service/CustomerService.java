@@ -8,14 +8,13 @@ import java.util.NoSuchElementException;
 import org.korcula.dto.CustomerRequest;
 import org.korcula.dto.CustomerResponse;
 import org.korcula.dto.ProductResponse;
-import org.korcula.feignclient.ProductFeignClient;
 import org.korcula.model.Customer;
 import org.korcula.repository.CustomerRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.util.ReflectionUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ResponseStatusException;
 
 import lombok.RequiredArgsConstructor;
@@ -25,15 +24,19 @@ import lombok.RequiredArgsConstructor;
 public class CustomerService {
 
 	private final CustomerRepository customerRepository;
-	private final ProductFeignClient productFeignClient;
-	private final RestTemplate restTemplate;
+//	private final ProductFeignClient productFeignClient;
+//	private final RestTemplate restTemplate;
+	private final WebClient webClient;
+
+//	@Value("${productservice.base.url}")
+//	private String productBaseUrl;
 
 	public String createNewCustomer(CustomerRequest customerDto) {
 		Customer newCustomer = new Customer();
 		BeanUtils.copyProperties(customerDto, newCustomer);
-		
+
 		customerRepository.save(newCustomer);
-		
+
 		String result = "Customer successfuly added to the DB!";
 
 		return result;
@@ -42,10 +45,15 @@ public class CustomerService {
 	public CustomerResponse getOneCustomer(Integer custId) {
 		Customer customer = customerRepository.findById(custId).get();
 		CustomerResponse customerResponse = new CustomerResponse();
-		
+
 //		ProductResponse product = productFeignClient.getProductByCustomerId(custId);
-		ProductResponse productResponse = restTemplate.getForObject("http://localhost:9091/product/api/products/{custId}", ProductResponse.class, custId);
-		
+		ProductResponse productResponse = webClient.get().uri("/products/" + custId)
+														 .retrieve()
+														 .bodyToMono(ProductResponse.class)
+														 .block();// productBaseUrl is already coming
+																						// with the webClient Bean from
+																						// the configuration class
+
 		customerResponse.setProductResponse(productResponse);
 
 		if (customer != null)
@@ -62,7 +70,6 @@ public class CustomerService {
 
 	public CustomerResponse editCustomer(Customer customer) {
 		Customer existCustomer = customerRepository.findById(customer.getId()).orElse(null);
-		
 
 		if (existCustomer != null) {
 			existCustomer.setCustomerName(customer.getCustomerName());
@@ -84,10 +91,9 @@ public class CustomerService {
 		if (existCustomer != null) {
 			customerRepository.delete(existCustomer);
 			result = "Customer deleted successfuly!";
-			
+
 			return result;
-		}
-		else
+		} else
 			throw new NoSuchElementException();
 	}
 
@@ -106,11 +112,17 @@ public class CustomerService {
 
 		CustomerResponse customerDto = new CustomerResponse();
 		BeanUtils.copyProperties(customer, customerDto);
-		
+
 		return customerDto;
 	}
 
-//	public Map<String, List<ResponseCustomerAndProduct>> getCustomerInfo() {
-//		return customerRepository.getCustomerNameAndProductName().stream().collect(Collectors.groupingBy(ResponseCustomerAndProduct::getCustomerName));
+	// Call Product Service using RestTemplate
+//	private ProductResponse callingProductResponseUsingRestTemplate(Integer custId) {
+//		return restTemplate.getForObject(productBaseUrl + "/products/{custId}",
+//				ProductResponse.class, custId);
 //	}
+
+//	public Map<String, List<ResponseCustomerAndProduct>> getCustomerInfo() {
+//	return customerRepository.getCustomerNameAndProductName().stream().collect(Collectors.groupingBy(ResponseCustomerAndProduct::getCustomerName));
+//}
 }
