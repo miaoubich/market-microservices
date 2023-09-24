@@ -2,6 +2,7 @@ package org.korcula.feignclient;
 
 import org.korcula.dto.ProductResponse;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -10,5 +11,5 @@ import org.springframework.web.bind.annotation.PathVariable;
 public interface ProductFeignClient { //This is a proxy
 
 	@GetMapping("/products/{customerId}")
-	public ProductResponse getProductByCustomerId(@PathVariable("customerId") Integer customerId);
+	public ResponseEntity<ProductResponse> getProductByCustomerId(@PathVariable("customerId") Integer customerId);
 }

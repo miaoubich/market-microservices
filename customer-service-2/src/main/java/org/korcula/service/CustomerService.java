@@ -15,6 +15,7 @@ import org.korcula.repository.CustomerRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.util.ReflectionUtils;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -48,7 +49,8 @@ public class CustomerService {
 		ProductResponse productResponse = new ProductResponse();
 
 		try {
-			productResponse = productFeignClient.getProductByCustomerId(custId);
+			ResponseEntity<ProductResponse> productResponseEntity = productFeignClient.getProductByCustomerId(custId);
+			productResponse = productResponseEntity.getBody();
 		} 
 		catch (FeignException e) {
 		    if (e.status() == 302) {
@@ -62,7 +64,7 @@ public class CustomerService {
 		    	productResponse = null;
 		}
 		customerResponse.setProductResponse(productResponse);
-
+		
 		if (customer != null)
 			BeanUtils.copyProperties(customer, customerResponse);
 		return customerResponse;
